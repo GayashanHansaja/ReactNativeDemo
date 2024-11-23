@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text ,Image} from 'react-native';
+import { StyleSheet, Text ,Image,TouchableNativeFeedback,View,Button,Alart} from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+
 
 
 export default function App() {
@@ -8,13 +9,17 @@ export default function App() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <Text>shut the fuck</Text>
-        <Image style={{
+        <TouchableNativeFeedback onPress={()=>console.log("Hiii")}><View style={{
           width:200,
-          height:300,}}
-          blurRadius={10}
-          fadeDuration={100}
-        source={{
-          uri:"https://picsum.photos/200/300"}}/>
+          height:70,backgroundColor:"dodgerblue"}}> 
+       </View></TouchableNativeFeedback>
+        <Button color="orange" title="click me" 
+            	onPress={()=>Alart.alert("My title","My massage",[
+                {text:"yes",onPress:()=>console.log("yes")},
+                {text:"no",onPress:()=>console.log("no")},
+                ])
+              }
+            />
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -23,6 +28,5 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'dodgerblue',
   },
 });
