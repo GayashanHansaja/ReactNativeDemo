@@ -7,11 +7,20 @@
     "icon": "./App/assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "plugins":[
+      [
+      "expo-location",
+      {
+        "isAndroidForegroundServiceEnabled": "Allow $(PRODUCT_NAME) to use your location."
+      }
+    ]
+  ],
     "splash": {
       "image": ".App//assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    
     "ios": {
       "supportsTablet": true
     },
@@ -21,6 +30,7 @@
         "backgroundColor": "#ffffff"
       }
     },
+
     "web": {
       "favicon": "./assets/favicon.png"
     }
