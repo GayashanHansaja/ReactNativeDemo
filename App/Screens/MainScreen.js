@@ -1,17 +1,30 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View,FlatList, SafeAreaView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import * as Location from 'expo-location';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-const Base_URL = `https://api.openweathermap.org/data/2.5/weather`;
+const Base_URL = `https://api.openweathermap.org/data/2.5`;
 const WEATHER_API_KEY = 'd323256bf52779f543c075f21d31fbac';
 /* const url = `https://api.openweathermap.org/data/2.5/weather?lat=6.9319&lon=79.8478&appid=d323256bf52779f543c075f21d31fbac`; */
-
+/* https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key} */
 const MainScreen = () => {
   const [weather, setWeather] = useState(null);
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [forecast, setForecast] = useState(null);
+  
 
+  //useEffect to fetch weather data and fotrecast data
+  useEffect(() => {
+    if(location){
+    fetchWeather();
+    forecastWeather();
+    }
+  }, [location]);
+
+
+  //useEffect to get current location
   useEffect(() => {
     async function getCurrentLocation() {
       
@@ -30,15 +43,14 @@ const MainScreen = () => {
   }, []);
 
   
-  useEffect(() => {
-    fetchWeather();
-  }, []);
-
+//fetch currunt weather data
   const fetchWeather = async () => {
-    const lat=6.9319;
-    const long=79.8478;
+    if(!location){
+      return;
+    }
+
     try {
-      const result = await fetch(`${Base_URL}?lat=${lat}&lon=${long}&appid=${WEATHER_API_KEY}`);
+      const result = await fetch(`${Base_URL}/weather?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${WEATHER_API_KEY}`);
       const data = await result.json();
       console.log(data);
       setWeather(data);
@@ -47,13 +59,31 @@ const MainScreen = () => {
     }
   };
 
+  //fetch forecast weather data
+  const forecastWeather = async () => {
+      if(!location){
+        return;
+      }
+
+      try {
+        const result = await fetch(`${Base_URL}/forecast?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${WEATHER_API_KEY}`);
+        const data = await result.json();
+        console.log(data.list);
+        setForecast(data.list);
+      } catch (error) {
+        console.error("Error forcasting weather data: ", error);
+      }
+    };
+  
+
 
   if (!weather) {
     return <ActivityIndicator />;
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{weather.name}</Text>
       <Text style={styles.temp}>{Math.floor(weather.main.temp - 273.15)}°C</Text>
       {/* <Text>Feels Like: {(weather.main.feels_like - 273.15).toFixed(2)}°C</Text>
@@ -61,7 +91,17 @@ const MainScreen = () => {
       <Text>Max Temperature: {(weather.main.temp_max - 273.15).toFixed(2)}°C</Text>
       <Text>Pressure: {weather.main.pressure} hPa</Text>
       <Text>Humidity: {weather.main.humidity}%</Text> */}
-    </View>
+      <FlatList
+        data={forecast}
+        renderItem={({item}) => (
+        <View>
+        <Text>{item.main.temp}</Text>
+      </View>
+        )}
+      />
+
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
@@ -74,7 +114,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 25,
     fontWeight: 'bold',
-    justifyContent:'center'
+    justifyContent:'center',
+    alignItems:'center'
   },
   temp:{
     fontSize:100,
