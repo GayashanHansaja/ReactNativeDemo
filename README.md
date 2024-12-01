@@ -3,9 +3,14 @@ Weather App 🌤️
 A simple weather application that fetches real-time weather data using the OpenWeather API.
 
 Features
-Search for current weather by city name.
+
 Displays temperature, weather conditions, and other details.
 Easy-to-use interface.
 Tech Stack
-Frontend: HTML, CSS, JavaScript
+Frontend: ReactNative
 API: OpenWeather API
+
+git clone https://github.com/<your-username>/<repo-name>.git  
+cd <repo-name>  
+dependancy
+npm dayjs --legacy--peer-deps 
