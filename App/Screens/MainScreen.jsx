@@ -1,8 +1,10 @@
-import { StyleSheet, Text, View,FlatList, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View,FlatList, SafeAreaView ,ImageBackground} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import * as Location from 'expo-location';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import ForcastItems from '../components/ForcastItems';
+import { BlurView } from 'expo-blur';
 
 const Base_URL = `https://api.openweathermap.org/data/2.5`;
 const WEATHER_API_KEY = 'd323256bf52779f543c075f21d31fbac';
@@ -68,6 +70,7 @@ const MainScreen = () => {
       try {
         const result = await fetch(`${Base_URL}/forecast?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${WEATHER_API_KEY}`);
         const data = await result.json();
+        
         console.log(data.list);
         setForecast(data.list);
       } catch (error) {
@@ -82,44 +85,60 @@ const MainScreen = () => {
   }
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>{weather.name}</Text>
-      <Text style={styles.temp}>{Math.floor(weather.main.temp - 273.15)}°C</Text>
-      {/* <Text>Feels Like: {(weather.main.feels_like - 273.15).toFixed(2)}°C</Text>
-      <Text>Min Temperature: {(weather.main.temp_min - 273.15).toFixed(2)}°C</Text>
-      <Text>Max Temperature: {(weather.main.temp_max - 273.15).toFixed(2)}°C</Text>
-      <Text>Pressure: {weather.main.pressure} hPa</Text>
-      <Text>Humidity: {weather.main.humidity}%</Text> */}
-      <FlatList
-        data={forecast}
-        renderItem={({item}) => (
-        <View>
-        <Text>{item.main.temp}</Text>
+    <ImageBackground style={styles.container}
+    source={require('../assets/cat.jpeg')}>
+      <View 
+      style={{
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor:'rgba(0,0,0,0.5)'}}/>
+      <View >
+  <Text style={styles.title}>{weather.name}</Text>
+  <Text style={styles.temp}>{Math.floor(weather.main.temp - 273.15)}°C</Text>
+        
       </View>
-        )}
-      />
+      
+  <FlatList
+    data={forecast}
+    contentContainerStyle={styles.listContent}
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    renderItem={({ item }) => <ForcastItems forecast={item} />}
+    keyExtractor={(item, index) => index.toString()}
+  />
+</ImageBackground>
 
-      </SafeAreaView>
-    </SafeAreaProvider>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent:'center',
-    alignItems:'center'
+   // A soothing light blue background
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    justifyContent: 'center',
+    
   },
   title: {
-    fontSize: 25,
+    fontSize: 28,
     fontWeight: 'bold',
-    justifyContent:'center',
-    alignItems:'center'
+    color: 'white', // A complementary darker green for the title
+    textAlign: 'center',
+    marginBottom: 10,
+    marginTop: 200,
   },
-  temp:{
-    fontSize:100,
-  }
+  temp: {
+    fontSize: 80,
+    fontWeight: '300',
+    color: 'white', // Darker green for temperature
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  listContent: {
+    gap: 20, // Moderate spacing between items
+    paddingVertical: 20,
+  },
 });
+
 
 export default MainScreen;

@@ -16,7 +16,7 @@
     ]
   ],
     "splash": {
-      "image": ".App//assets/splash-icon.png",
+      "image": ".App//assets/universe.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
